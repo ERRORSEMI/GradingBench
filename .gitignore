@@ -1,0 +1,23 @@
+.env
+*.pyc
+__pycache__/
+*.egg-info/
+.DS_Store
+
+results/
+qwentest/
+
+# Dataset lives on Hugging Face (see data/README.md)
+data/images/
+data/annotations/
+data/manifest/
+data/schema/
+
+# legacy layouts
+data/L1-Single-Question/
+data/L2-Specified-Question/
+data/L3-Full-Page/
+data/test/
+
+*.log
+/tmp/
