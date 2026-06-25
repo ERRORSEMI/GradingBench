@@ -74,16 +74,16 @@ bash scripts/download_data.sh
 # Or: hf download ERRORSEMI/GradingBench --repo-type dataset --local-dir data
 
 # 3. Install (optional editable install)
-cd workpy && pip install -e .
+pip install -e .
 
 # 4. Run inference + evaluation — e.g. L1 answer-free
 export CUDA_VISIBLE_DEVICES=0,1
 export TENSOR_PARALLEL_SIZE=2
-bash workpy/L1-pigaipy/shells/run_vllm.sh \
+bash scripts/run_vllm.sh L1 \
   --model Qwen2.5-VL-7B-Instruct --need_answer False
 
 # Metrics only (if predictions already exist):
-bash workpy/L1-pigaipy/shells/evaluator.sh --model Qwen2.5-VL-7B-Instruct --need_answer False
+bash scripts/evaluator.sh L1 --model Qwen2.5-VL-7B-Instruct --need_answer False
 ```
 
 ## Data layout (after download)
@@ -102,20 +102,20 @@ See [data/README.md](data/README.md) for annotation schema.
 
 | Setting | Entry |
 |---------|-------|
-| L1 answer-free | `workpy/L1-pigaipy/shells/evaluator.sh --need_answer False` |
-| L1 answer-based | `workpy/L1-pigaipy/shells/evaluator.sh --need_answer True` |
-| L2 answer-free | `workpy/L2-pigaipy/shells/evaluator.sh --need_answer False` |
-| L2 answer-based | `workpy/L2-pigaipy/shells/evaluator.sh --need_answer True` |
-| L3 answer-free | `workpy/L3-pigaipy/shells/evaluator.sh --need_answer False` |
-| L3 answer-based | `workpy/L3-pigaipy/shells/evaluator.sh --need_answer True` |
+| L1 answer-free | `bash scripts/evaluator.sh L1 --need_answer False --model <M>` |
+| L1 answer-based | `bash scripts/evaluator.sh L1 --need_answer True --model <M>` |
+| L2 answer-free | `bash scripts/evaluator.sh L2 --need_answer False --model <M>` |
+| L2 answer-based | `bash scripts/evaluator.sh L2 --need_answer True --model <M>` |
+| L3 answer-free | `bash scripts/evaluator.sh L3 --need_answer False --model <M>` |
+| L3 answer-based | `bash scripts/evaluator.sh L3 --need_answer True --model <M>` |
 
 Run all six at once: `bash scripts/evaluate.sh all false --model <model_name>`
 
 ## Running models
 
-**Open-source (vLLM):** set `MODEL_ROOT` in `.env`, then use `workpy/Lx-pigaipy/shells/run_vllm.sh`. Configure GPUs via `CUDA_VISIBLE_DEVICES` and `TENSOR_PARALLEL_SIZE`.
+**Open-source (vLLM):** set `MODEL_ROOT` in `.env`, then use `bash scripts/run_vllm.sh L1|L2|L3`. Configure GPUs via `CUDA_VISIBLE_DEVICES` and `TENSOR_PARALLEL_SIZE`.
 
-**Hosted API (optional):** set `PIGAI_API_APP_ID`, `PIGAI_API_APP_KEY`, and `PIGAI_API_ENDPOINT` in `.env`, then use `workpy/Lx-pigaipy/shells/run_api.sh`.
+**Hosted API (optional):** set `PIGAI_API_APP_ID`, `PIGAI_API_APP_KEY`, and `PIGAI_API_ENDPOINT` in `.env`, then use `bash scripts/run_api.sh L1|L2|L3`.
 
 Predictions are saved under `results/predictions/Lx/{answer-free|answer-based}/{model}/`.
 
@@ -124,18 +124,26 @@ Predictions are saved under `results/predictions/Lx/{answer-free|answer-based}/{
 ```text
 .
 ├── README.md
+├── pyproject.toml
 ├── .env.example
-├── data/README.md             # dataset download pointer
-├── docs/EVALUATION.md         # evaluation guide
+├── data/                      # dataset (images + annotations)
+├── docs/EVALUATION.md
 ├── scripts/
-│   ├── env.sh
-│   ├── download_data.sh
-│   └── evaluate.sh            # run all six settings
-└── workpy/
-    ├── L1-pigaipy/            # L1 evaluation code
-    ├── L2-pigaipy/            # L2 evaluation code
-    ├── L3-pigaipy/            # L3 evaluation code
-    └── common/
+│   ├── env.sh                 # environment variables
+│   ├── download_data.sh       # download dataset from Hugging Face
+│   ├── run_vllm.sh            # L1|L2|L3 inference (vLLM)
+│   ├── run_api.sh             # L1|L2|L3 inference (API)
+│   ├── evaluator.sh           # Stage1→2→3 metrics
+│   └── evaluate.sh            # batch six settings
+├── src/gradingbench/          # Python package
+│   ├── config/                # level specs, paths settings
+│   ├── coords/                # bbox formats & transforms
+│   ├── data/                  # annotation I/O
+│   ├── eval/                  # metrics & parsing
+│   ├── inference/             # vLLM & API runners
+│   ├── pipeline/              # stage1/2/3
+│   └── prompts/
+└── qwentest/                  # local experiment workspace (optional)
 ```
 
 ## Citation

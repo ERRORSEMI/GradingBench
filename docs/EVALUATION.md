@@ -84,14 +84,14 @@ source scripts/env.sh
 # Open-source (set GPU via env)
 export CUDA_VISIBLE_DEVICES=0
 export TENSOR_PARALLEL_SIZE=1
-bash workpy/L1-pigaipy/shells/run_vllm.sh \
+bash scripts/run_vllm.sh L1 \
   --model Qwen2.5-VL-7B-Instruct --need_answer False
 
 # API model
-bash workpy/L1-pigaipy/shells/run_api.sh --model glm-4.6v --need_answer False
+bash scripts/run_api.sh L1 --model glm-4.6v --need_answer False
 
 # Evaluate existing predictions
-bash workpy/L1-pigaipy/shells/evaluator.sh --model glm-4.6v --need_answer False
+bash scripts/evaluator.sh L1 --model glm-4.6v --need_answer False
 bash scripts/evaluate.sh all false --model <model_name>
 ```
 

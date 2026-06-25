@@ -7,10 +7,10 @@ pigai_init_shell() {
   local script_dir
   script_dir="$(cd "$(dirname "${script_path}")" && pwd)"
   export PIGAI_SHELL_DIR="${script_dir}"
-  export PIGAI_WORKPY_ROOT="$(cd "${script_dir}/../.." && pwd)"
-  export PIGAI_REPO_ROOT="$(cd "${PIGAI_WORKPY_ROOT}/.." && pwd)"
+  export PIGAI_REPO_ROOT="$(cd "${script_dir}/.." && pwd)"
+  export PIGAI_SRC_ROOT="${PIGAI_REPO_ROOT}/src"
   export PIGAI_LEVEL="${level}"
-  export PIGAI_LEVEL_DIR="${PIGAI_WORKPY_ROOT}/${level}-pigaipy"
+  export PYTHONPATH="${PIGAI_SRC_ROOT}${PYTHONPATH:+:${PYTHONPATH}}"
   # shellcheck source=/dev/null
   source "${PIGAI_REPO_ROOT}/scripts/env.sh"
 }

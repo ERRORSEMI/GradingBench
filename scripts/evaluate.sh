@@ -23,7 +23,7 @@ done
 run_one() {
   local lv="$1"
   [[ -n "$MODEL" ]] || { echo "需指定 --model"; exit 1; }
-  bash "${PIGAI_WORKPY_ROOT}/${lv}-pigaipy/shells/evaluator.sh" \
+  bash "${PIGAI_REPO_ROOT}/scripts/evaluator.sh" "$lv" \
     --model "$MODEL" --need_answer "$NEED_ANSWER"
 }
 

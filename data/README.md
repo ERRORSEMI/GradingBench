@@ -54,4 +54,4 @@ Each `annotations/Lx.json` entry:
 
 `image` is relative to `images/Lx/`.
 
-For dataset card metadata used on Hugging Face, see `scripts/hf_dataset_card.md`.
+Full dataset documentation is on [Hugging Face](https://huggingface.co/datasets/ERRORSEMI/GradingBench).
